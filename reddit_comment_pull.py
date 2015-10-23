@@ -36,9 +36,9 @@ for comment in comments:
     score = tagline.find_all('span', class_='score')
     if not score:
         continue
-    thing['dislikes'] = score[0].string.replace('points', '').strip() if score[0] is not None else ''
-    thing['unvoted'] = score[1].string.replace('points', '').strip() if score[1] is not None else ''
-    thing['likes'] = score[2].string.replace('points', '').strip() if score[2] is not None else ''
+    thing['dislikes'] = score[0].string.replace('points', '').replace('point', '').strip() if score[0] is not None else ''
+    thing['unvoted'] = score[1].string.replace('points', '').replace('point', '').strip() if score[1] is not None else ''
+    thing['likes'] = score[2].string.replace('points', '').replace('point', '').strip() if score[2] is not None else ''
     
     time = tagline.find('time')
     thing['time'] = time.attrs['datetime'] if time is not None else ''
