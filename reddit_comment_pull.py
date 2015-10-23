@@ -10,7 +10,7 @@ sys.setdefaultencoding('utf-8')
 # Define source and container
 data = []
 n = 1000
-url = 'https://www.reddit.com/r/AskReddit/comments/3prc2q/what_genuinely_terrifies_you/?limit=' + str(n)
+url = 'https://www.reddit.com/r/AskReddit/comments/3pwjuz/who_can_you_not_believe_is_still_alive/?limit=' + str(n)
 
 # Get data
 req = urllib2.Request(url)
@@ -23,6 +23,7 @@ listings = commentarea.find('div', class_='sitetable nestedlisting')
 # only look at the top level comments
 comments = listings.find_all('div', class_='comment', recursive=False)
 
+
 for comment in comments:
     thing = {}
 
@@ -33,16 +34,19 @@ for comment in comments:
     thing['author'] = author.string if author is not None else ''
 
     score = tagline.find_all('span', class_='score')
-
-    thing['dislikes'] = score[0].string if score[0] is not None else ''
-    thing['unvoted'] = score[1].string if score[1] is not None else ''
-    thing['likes'] = score[2].string if score[2] is not None else ''
+    if not score:
+        continue
+    thing['dislikes'] = score[0].string.replace('points', '').strip() if score[0] is not None else ''
+    thing['unvoted'] = score[1].string.replace('points', '').strip() if score[1] is not None else ''
+    thing['likes'] = score[2].string.replace('points', '').strip() if score[2] is not None else ''
     
     time = tagline.find('time')
     thing['time'] = time.attrs['datetime'] if time is not None else ''
 
     # Get comment content
     content = comment.find('form').find('p')
+    if not content.string:
+        continue
     thing['content'] = content.string if content is not None else ''
 
     data.append(thing)
